@@ -40,27 +40,31 @@ def interface(category):
         return render_template('interface.html', form=form, category=category, categories=categories)
 
 
-@app.route('/article_amazon/<amazon_id>.xml')
+@app.route('/article_amazon/<amazon_id>')
 def article_amazon(amazon_id):
     data = get_amazon_data_from_id(amazon_id)
-    template = render_template('template.xml', data=data)
-    response = make_response(template)
-    response.headers['Content-Type'] = 'application/xml'
-    return response
+    response_type = request.args.get("type", "json")
+    if response_type == "json":
+        return jsonify(data)
+    elif response_type == "xml":
+        template = render_template('template.xml', data=data)
+        response = make_response(template)
+        response.headers['Content-Type'] = 'application/xml'
+        return response
 
-@app.route('/nique_ta_mere')
-def nique_ta_mere():
-    data = get_amazon_data_from_id("B01KHFIVIU")
-    return jsonify(data)
 
-
-@app.route('/article/<category>/<int:article_id>.xml')
+@app.route('/article/<category>/<int:article_id>')
 def article(category, article_id):
     if Cat.has_value(category) and article_id < N_ARTICLES:
         identifiant_produit = '{}:article{}'.format(Cat(category),article_id )
         amazon_id = get_key(identifiant_produit)
         data = get_amazon_data_from_id(amazon_id)
-        template = render_template('template.xml', data=data)
-        response = make_response(template)
-        response.headers['Content-Type'] = 'application/xml'
-        return response
+        response_type = request.args.get("type", "json")
+
+        if response_type == "json":
+            return jsonify(data)
+        elif response_type == "xml":
+            template = render_template('template.xml', data=data)
+            response = make_response(template)
+            response.headers['Content-Type'] = 'application/xml'
+            return response

@@ -6,3 +6,4 @@ dicttoxml
 requests_cache
 gunicorn
 flask_wtf
+lxml
