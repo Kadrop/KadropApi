@@ -1,0 +1,11 @@
+web:
+  build: .
+  command: gunicorn --bind 0.0.0.0:80 wsgi
+  ports:
+   - "80:80"
+  volumes:
+   - .:/app
+  links:
+   - redis
+redis:
+  image: redis

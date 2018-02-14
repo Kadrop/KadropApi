@@ -1,0 +1,22 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>{{data.title}}</title>
+        <description>{{data.description}}</description>
+        <link>{{data.url}}</link>
+        <price>{{data.price}}</price>
+        <atom:link href="{{data.url}}" rel="self" type="application/rss+xml"/>
+        <image>
+            <url>{{data.image}}</url>
+            <title>Kadrop</title>
+            <link>{{data.url}}</link>
+        </image>
+        <item>
+            <link>{{data.url}}</link>
+            <title>{{data.title}}</title>
+            <description>Très beau produit faut vraiment nous acheter les frères</description>
+            <pubDate>Thu, 08 Feb 2018 12:55:23 +0100</pubDate>
+            <guid isPermaLink="true">http://www.lemonde.fr/tiny/5253792/</guid>
+            <enclosure url="{{data.image}}" type="image/jpeg" length="70225"/>
+        </item>
+    </channel>
+</rss>

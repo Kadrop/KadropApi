@@ -1,0 +1,37 @@
+{% block content %}
+    <h1>{{category}}</h1>
+    <form action="" method="post">
+        {{ form.hidden_tag() }}
+        <p>
+            {{ form.article1.label }}<br>
+            {{ form.article1(size=32, value=categories.article1) }}
+            {% for error in form.article1.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+        <p>
+            {{ form.article2.label }}<br>
+            {{ form.article2(size=32, value=categories.article2) }}
+            {% for error in form.article2.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+        <p>
+            {{ form.article3.label }}<br>
+            {{ form.article3(size=32, value=categories.article3) }}
+        </p>
+        <p>
+            {{ form.article4.label }}<br>
+            {{ form.article4(size=32, value=categories.article4) }}
+        </p>
+        <p>
+            {{ form.article5.label }}<br>
+            {{ form.article5(size=32, value=categories.article5) }}
+        </p><p>
+            {{ form.article6.label }}<br>
+            {{ form.article6(size=32, value=categories.article6) }}
+        </p>
+        <p>{{ form.submit() }}</p>
+
+    </form>
+{% endblock %}
