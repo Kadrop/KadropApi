@@ -5,6 +5,7 @@ web:
    - "80:80"
   volumes:
    - .:/app
+   - /etc/letsencrypt/live/api.kadrop.com/:/ssl_path/
   links:
    - redis
 redis:
