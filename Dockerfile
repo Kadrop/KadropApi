@@ -4,6 +4,9 @@ MAINTAINER Raphael Courivaud "r.courivaud@gmail.com"
 
 ENV DEBIAN_FRONTEND noninteractive
 
+RUN apt-get update
+RUN apt-get install -y nginx gunicorn supervisor
+
 # Setup flask application
 RUN mkdir -p /deploy/app
 COPY . /deploy/app
@@ -22,4 +25,4 @@ COPY gunicorn.conf /etc/supervisor/conf.d/gunicorn.conf
 
 # Start processes
 CMD ["/usr/bin/supervisord"]
-#CMD ["/bin/bash"]
+# CMD ["/bin/bash"]
