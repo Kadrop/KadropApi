@@ -2,7 +2,7 @@ web:
   build: .
   command: /usr/bin/supervisord
   ports:
-   - "80:80"
+   - "443:433"
   volumes:
    - .:/app
    - /etc/letsencrypt/live/api.kadrop.com/:/ssl_path/
