@@ -1,8 +1,10 @@
+import json
+
 from flask import render_template, Flask, make_response, request, redirect, url_for, jsonify
 
-from kadrop_api.app.config import Config
-from kadrop_api.app.forms import ArticlesForm
-from kadrop_api.app.redis_handler import Category, Cat, N_ARTICLES, get_key
+from ..app.config import Config
+from ..app.forms import ArticlesForm
+from ..app.redis_handler import Category, Cat, N_ARTICLES, retrieve_item
 from ..amazon_extractor import get_amazon_data_from_id
 
 app = Flask(__name__)
@@ -21,6 +23,7 @@ def interfaces():
 
 @app.route('/interface/<category>', methods=['GET', 'POST'])
 def interface(category):
+    print(category)
     form = ArticlesForm(request.form)
 
     if not Cat.has_value(category.lower()):
@@ -36,7 +39,8 @@ def interface(category):
                 "article6": form.article6.data
             })
             return redirect(url_for('interfaces'))
-        categories = {k.replace(str(Cat(category)) + ":", ""): v for k, v in Category(category).articles.items()}
+        print(Category(category).articles)
+        categories = {k.replace(str(Cat(category)) + ":", ""): v["_id"] for k, v in Category(category).articles.items()}
         return render_template('interface.html', form=form, category=category, categories=categories)
 
 
@@ -57,8 +61,8 @@ def article_amazon(amazon_id):
 def article(category, article_id):
     if Cat.has_value(category) and article_id < N_ARTICLES:
         identifiant_produit = '{}:article{}'.format(Cat(category),article_id )
-        amazon_id = get_key(identifiant_produit)
-        data = get_amazon_data_from_id(amazon_id)
+        data = retrieve_item(identifiant_produit)
+
         response_type = request.args.get("type", "json")
 
         if response_type == "json":

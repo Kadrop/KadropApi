@@ -2,10 +2,9 @@ web:
   build: .
   command: /usr/bin/supervisord
   ports:
-   - "443:433"
+   - "443:443"
   volumes:
    - .:/app
-   - /etc/letsencrypt/live/api.kadrop.com/:/ssl_path/
   links:
    - redis
 redis:

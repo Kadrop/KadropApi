@@ -17,7 +17,6 @@ s = requests.Session()
 
 def get_amazon_data_from_id(amazon_id):
     url = AMAZON_PRODUCT_URL.format(amazon_id)
-    print(url)
     return get_amazon_data_from_url(url=url)
 
 
@@ -27,12 +26,27 @@ def get_amazon_data_from_url(url):
     title = clean_html_string(soup.find(id="productTitle").text)
     price = clean_html_string((soup.find(id="priceblock_ourprice") or soup.find(id="priceblock_saleprice")).text)
     image = clean_html_string(soup.find(id="landingImage")["data-old-hires"])
+    features_bullets = [clean_html_string(elt.text)
+                        for elt
+                        in soup.find(id="feature-bullets").find_all("li")
+                        if elt] \
+        if soup.find(id="feature-bullets") \
+        else None
+    details = {}
+    for tr in soup.find(id="prodDetails").find_all("tr"):
+        label, value = tr.find_all("td")[0:2]
+        label = clean_html_string(label.text)
+        value = clean_html_string(value.text)
+        if label and value:
+            details[label] = value
 
     return {
         "title": title,
         "price": price,
         "image": image,
-        "url": url
+        "url": url,
+        "features": {"feature_{}".format(f):feat for f, feat in enumerate(features_bullets)},
+        "details": details
     }
 
 
@@ -50,8 +64,9 @@ def get_xml_from_url(url):
 
 
 def clean_html_string(string):
-    return " ".join(string.split())
+    if string:
+        return " ".join(string.split())
 
 
 if __name__ == "__main__":
-    print(get_amazon_data_from_id("B00BWEI3O8"))
+    print(get_amazon_data_from_id("B0000C1Y10"))

@@ -1,8 +1,15 @@
+import pickle
+
 import redis
 from enum import Enum
 
-r = redis.StrictRedis(host="redis", port=6379, db=0)
+from ..app.config import Config
+from ..amazon_extractor import get_amazon_data_from_id
 
+r = redis.StrictRedis(host=Config.REDIS_HOST, port=Config.REDIS_PORT, db=0, decode_responses=True)
+
+DETAILS_ID = ":details"
+FEATURES_ID = ":features"
 N_ARTICLES = 6
 
 
@@ -26,31 +33,46 @@ class Category:
         if list_of_article is None:
             self.articles = {k: v
                              for k, v
-                             in { f"{category}:article{index}": get_key(f"{category}:article{index}")
+                             in {f"{category}:article{index}": retrieve_item(f"{category}:article{index}")
                                  for index
-                                 in range(1, N_ARTICLES+1)}.items()
+                                 in range(1, N_ARTICLES + 1)}.items()
                              if v}
         else:
-            self.articles = {f"{category}:{key}": set_key(f"{category}:{key}", value)
+            self.articles = {f"{category}:{key}": save_item(f"{category}:{key}", value)
                              for key, value
                              in list_of_article.items() if value}
 
-        print(self.articles)
+
+def save_item(key, _id):
+    data = get_amazon_data_from_id(_id)
+    data["_id"] = _id
+    if data.get("features"):
+        hset_key(key + FEATURES_ID, data.get("features"))
+        data.pop("features")
+
+    if data.get("details"):
+        hset_key(key + DETAILS_ID, data.get("details"))
+        data.pop("details")
+
+    return hset_key(key, data)
 
 
-def set_key(key, value):
-    r.set(key, value=value)
+def retrieve_item(key):
+    data = hget_key(key=key)
+    data["features"] = hget_key(key + FEATURES_ID)
+    data["details"] = hget_key(key + DETAILS_ID)
+    return {k: v for k, v in data.items() if v}
+
+
+def hset_key(key, value):
+    r.hmset(key, value, )
     return value
 
 
-def get_key(key):
-    res = r.get(key)
-    return res.decode() if res else None
+def hget_key(key):
+    res = r.hgetall(key)
+    return res
 
 
 def remove_key(key):
     return r.delete(key)
-
-
-if __name__ == "__main__":
-    cate = Category(category=Cat.TECH)
