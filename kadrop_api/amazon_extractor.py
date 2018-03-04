@@ -26,6 +26,7 @@ def get_amazon_data_from_url(url):
     title = clean_html_string(soup.find(id="productTitle").text)
     price = clean_html_string((soup.find(id="priceblock_ourprice") or soup.find(id="priceblock_saleprice")).text)
     image = clean_html_string(soup.find(id="landingImage")["data-old-hires"])
+    product_description = "".join([str(elt) for elt in soup.find(id="productDescription").findAll("p")])
     features_bullets = [clean_html_string(elt.text)
                         for elt
                         in soup.find(id="feature-bullets").find_all("li")
@@ -45,7 +46,9 @@ def get_amazon_data_from_url(url):
         "price": price,
         "image": image,
         "url": url,
-        "features": {"feature_{}".format(f):feat for f, feat in enumerate(features_bullets)},
+        #"features": {"feature_{}".format(f):feat for f, feat in enumerate(features_bullets)},
+        "features": "\n".join(features_bullets),
+        "product_description": product_description,
         "details": details
     }
 
@@ -69,4 +72,4 @@ def clean_html_string(string):
 
 
 if __name__ == "__main__":
-    print(get_amazon_data_from_id("B0000C1Y10"))
+    print(get_amazon_data_from_id("B01MPX7ZVT"))

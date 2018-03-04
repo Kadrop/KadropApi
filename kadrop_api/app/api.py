@@ -57,10 +57,23 @@ def article_amazon(amazon_id):
         return response
 
 
+@app.route('/article/<category>')
+def categorie(category):
+    list_data = []
+    if Cat.has_value(category):
+        for i in range(N_ARTICLES):
+            identifiant_produit = '{}:article{}'.format(Cat(category), i)
+            data = {k: v for k, v in retrieve_item(identifiant_produit).items() if
+                    k in ["_id", "image", "price", "title"]}
+            list_data.append(data)
+
+    return jsonify(data)
+
+
 @app.route('/article/<category>/<int:article_id>')
 def article(category, article_id):
     if Cat.has_value(category) and article_id < N_ARTICLES:
-        identifiant_produit = '{}:article{}'.format(Cat(category),article_id )
+        identifiant_produit = '{}:article{}'.format(Cat(category), article_id)
         data = retrieve_item(identifiant_produit)
 
         response_type = request.args.get("type", "json")
