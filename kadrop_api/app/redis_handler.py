@@ -46,26 +46,26 @@ class Category:
 def save_item(key, _id):
     data = get_amazon_data_from_id(_id)
     data["_id"] = _id
-    if data.get("features"):
-        hset_key(key + FEATURES_ID, data.get("features"))
-        data.pop("features")
-
+    # if data.get("features"):
+    #     print(data.get("features"))
+    #     hset_key(key + FEATURES_ID, data.get("features"))
+    #     data.pop("features")
+    #
     if data.get("details"):
-        hset_key(key + DETAILS_ID, data.get("details"))
-        data.pop("details")
+         hset_key(key + DETAILS_ID, data.get("details"))
+         data.pop("details")
 
     return hset_key(key, data)
 
 
 def retrieve_item(key):
     data = hget_key(key=key)
-    data["features"] = hget_key(key + FEATURES_ID)
     data["details"] = hget_key(key + DETAILS_ID)
     return {k: v for k, v in data.items() if v}
 
 
 def hset_key(key, value):
-    r.hmset(key, value, )
+    r.hmset(key, value)
     return value
 
 

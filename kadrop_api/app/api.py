@@ -57,7 +57,7 @@ def article_amazon(amazon_id):
         return response
 
 
-@app.route('/article/<category>')
+@app.route('/category/<category>')
 def categorie(category):
     list_data = []
     if Cat.has_value(category):
@@ -65,9 +65,11 @@ def categorie(category):
             identifiant_produit = '{}:article{}'.format(Cat(category), i)
             data = {k: v for k, v in retrieve_item(identifiant_produit).items() if
                     k in ["_id", "image", "price", "title"]}
-            list_data.append(data)
+            if data :
 
-    return jsonify(data)
+                list_data.append(data)
+
+    return jsonify(list_data)
 
 
 @app.route('/article/<category>/<int:article_id>')
