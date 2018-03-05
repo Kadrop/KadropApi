@@ -14,6 +14,7 @@ N_ARTICLES = 6
 
 
 class Cat(Enum):
+    __order__ = "TECH HOME HIFI PHOTO INNOV"
     TECH = "tech"
     HOME = "home"
     HIFI = "hifi"

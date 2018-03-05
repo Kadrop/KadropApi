@@ -57,6 +57,21 @@ def article_amazon(amazon_id):
         return response
 
 
+@app.route('/tops/')
+def get_top():
+    list_data = []
+    for cat in Cat:
+        identifiant_produit = '{}:article{}'.format(cat, 1)
+        data = {k: v for k, v in retrieve_item(identifiant_produit).items() if
+                            k in ["_id", "image", "price", "title"]}
+        if data:
+            data["category"] = str(Cat(cat).value)
+
+            list_data.append(data)
+
+    return jsonify(list_data)
+
+
 @app.route('/category/<category>')
 def categorie(category):
     list_data = []
